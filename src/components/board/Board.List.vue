@@ -6,52 +6,50 @@ export default defineComponent({
 </script>
 
 <script setup lang="ts">
-import { ref, defineEmits, defineProps } from "vue";
+import { getBoardList } from "@/utils/api.axios";
+import { board } from "@/utils/instance.axios";
+import { ref, onMounted } from "vue";
 
-class board {
-  constructor(
-    public boardNo: number,
-    public boardTitle: string,
-    public boardContent: string,
-    public boardWriter: string,
-    public boardView: number,
-    public boardRegisterDate: Date,
-    public boardPhoto: string
-  ) {
-    this.boardNo = boardNo;
-    this.boardTitle = boardTitle;
-    this.boardContent = boardContent;
-    this.boardWriter = boardWriter;
-    this.boardView = boardView;
-    this.boardRegisterDate = boardRegisterDate;
-    this.boardPhoto = boardPhoto;
-  }
-}
-
+const pageArray = ref([] as Array<board>);
 const page = ref(1);
-const props = defineProps<{ boards: Array<board>; last: number }>();
-const emit = defineEmits<{
-  (e: "nextPage"): void;
-  (e: "prevPage"): void;
-  (e: "onChangeSearchType"): void;
-  (e: "onChangeKeyword"): void;
-}>();
-emit("prevPage");
-emit("nextPage");
-emit("onChangeSearchType");
-emit("onChangeKeyword");
+const last = ref(1);
+const searchType = ref("");
+const keyword = ref("");
+
+const fetchBoardList = () => {
+  getBoardList(page.value, searchType.value, keyword.value).then((res) => {
+    pageArray.value = res.data.list;
+    last.value = res.data.last;
+  });
+};
 
 const nextPage = () => {
   page.value += 1;
+  fetchBoardList();
 };
+
 const prevPage = () => {
   page.value -= 1;
+  fetchBoardList();
 };
+
+const fetchFilterdBoardList = () => {
+  page.value = 1;
+  fetchBoardList();
+};
+
+onMounted(() => {
+  getBoardList(1).then((res) => {
+    pageArray.value = res.data.list;
+    last.value = res.data.last;
+  });
+});
 </script>
 
 <template>
   <div>
-    <v-select block class="w-25" @update:menu="$emit('onChangeSearchType')" label="검색타입" :items="['제목', '내용', '작성자', '제목과 내용']" />
+    <v-select v-model="searchType" block class="w-25" label="검색타입" :items="['제목', '내용', '작성자', '제목과 내용']" />
+    <v-text-field v-model="keyword" @keyup.enter="fetchFilterdBoardList()" />
     <v-table theme="dark">
       <tr>
         <th>번호</th>
@@ -62,7 +60,7 @@ const prevPage = () => {
         <th>날짜</th>
         <th>이미지</th>
       </tr>
-      <tr v-for="board in boards" :key="board.boardNo">
+      <tr v-for="board in pageArray" :key="board.boardNo">
         <td>{{ board.boardNo }}</td>
         <td>{{ board.boardTitle }}</td>
         <td>{{ board.boardContent }}</td>
@@ -73,9 +71,9 @@ const prevPage = () => {
       </tr>
     </v-table>
     <div class="btn-cover">
-      <button :disabled="page <= 1" @click="$emit('prevPage'), prevPage()" class="page-btn">이전</button>
+      <button :disabled="page <= 1" @click="prevPage()" class="page-btn">이전</button>
       <span class="page-count">{{ page }} / {{ last }} 페이지</span>
-      <button :disabled="page >= props.last" @click="$emit('nextPage'), nextPage()" class="page-btn">다음</button>
+      <button :disabled="page >= last" @click="nextPage()" class="page-btn">다음</button>
     </div>
   </div>
 </template>

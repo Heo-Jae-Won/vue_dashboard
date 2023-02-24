@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import store from './store'
 import App from './App.vue'
 import './plugins/axios'
 import vuetify from './plugins/vuetify'
@@ -10,5 +11,6 @@ loadFonts()
 const app=createApp(App);
 app.use(router)
 .use(vuetify)
+.use(store)
 .mount('#app');
 

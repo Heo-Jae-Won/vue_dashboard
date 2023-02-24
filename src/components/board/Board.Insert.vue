@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { boardInsert } from "@/utils/api.axios";
+import { InsertBoardInfo } from "@/utils/api.axios";
 export default defineComponent({
   name: "boardInsert",
   setup() {
@@ -35,16 +35,15 @@ export default defineComponent({
             }
     }
 
-
     const onFormSubmit = async () => {
       const formData = new FormData();
       formData.append("boardTitle", boardTitle.value);
       formData.append("boardContent", boardContent.value);
       formData.append("boardWriter", boardWriter.value);
       formData.append("file", fileData.value);
-      boardInsert(formData);
-
+      InsertBoardInfo(formData);
     };
+
     return {
       boardTitle,
       boardContent,
