@@ -6,7 +6,25 @@ export const instance = axios.create({
   baseURL: apiRootPath,
 });
 
-//interface 만들고 class를 
+/*export class board {
+  constructor(
+    public boardNo: number,
+    public boardTitle: string,
+    public boardContent: string,
+    public boardWriter: string,
+    public boardView: number,
+    public boardRegisterDate: Date,
+    public boardPhoto: string
+  ) {
+    this.boardNo = boardNo;
+    this.boardTitle = boardTitle;
+    this.boardContent = boardContent;
+    this.boardWriter = boardWriter;
+    this.boardView = boardView;
+    this.boardRegisterDate = boardRegisterDate;
+    this.boardPhoto = boardPhoto;
+  }
+}*/ //아래와 같이 쓰면 위의 constructor가 자동 생성!
 export class board {}
 export interface board {
   boardNo: number;

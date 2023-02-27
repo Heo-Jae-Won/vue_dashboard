@@ -1,10 +1,12 @@
+<script setup lang="ts">
+import Header from './components/basis/Header.vue';
+import Footer from './components/basis/Footer.vue'
+</script>
+
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/board/list">게시판 목록</router-link> |
-    <router-link to="/board/insert">게시판 등록</router-link>
-  </nav>
-  <router-view/>
+  <Header></Header>
+  <router-view />
+  <Footer></Footer>
 </template>
 
 <style>

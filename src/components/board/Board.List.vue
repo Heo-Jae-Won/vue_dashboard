@@ -1,51 +1,3 @@
-<script lang="ts">
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "boardList",
-});
-</script>
-
-<script setup lang="ts">
-import { getBoardList } from "@/utils/api.axios";
-import { board } from "@/utils/instance.axios";
-import { ref, onMounted } from "vue";
-
-const pageArray = ref([] as Array<board>);
-const page = ref(1);
-const last = ref(1);
-const searchType = ref("");
-const keyword = ref("");
-
-const fetchBoardList = () => {
-  getBoardList(page.value, searchType.value, keyword.value).then((res) => {
-    pageArray.value = res.data.list;
-    last.value = res.data.last;
-  });
-};
-
-const nextPage = () => {
-  page.value += 1;
-  fetchBoardList();
-};
-
-const prevPage = () => {
-  page.value -= 1;
-  fetchBoardList();
-};
-
-const fetchFilterdBoardList = () => {
-  page.value = 1;
-  fetchBoardList();
-};
-
-onMounted(() => {
-  getBoardList(1).then((res) => {
-    pageArray.value = res.data.list;
-    last.value = res.data.last;
-  });
-});
-</script>
-
 <template>
   <div>
     <v-select v-model="searchType" block class="w-25" label="검색타입" :items="['제목', '내용', '작성자', '제목과 내용']" />
@@ -61,7 +13,7 @@ onMounted(() => {
         <th>이미지</th>
       </tr>
       <tr v-for="board in pageArray" :key="board.boardNo">
-        <td>{{ board.boardNo }}</td>
+        <td @click="$router.push(`/board/read/${board.boardNo}`)">{{ board.boardNo }}</td>
         <td>{{ board.boardTitle }}</td>
         <td>{{ board.boardContent }}</td>
         <td>{{ board.boardWriter }}</td>
@@ -78,6 +30,61 @@ onMounted(() => {
   </div>
 </template>
 
+<script lang="ts">
+import { getBoardList } from "@/utils/api.axios";
+import { board } from "@/utils/instance.axios";
+import { defineComponent, onBeforeMount, ref } from "vue";
+export default defineComponent({
+  name: "boardList",
+  setup() {
+    const pageArray = ref([] as Array<board>);
+    const page = ref(1);
+    const last = ref(1);
+    const searchType = ref("");
+    const keyword = ref("");
+
+    const fetchBoardList = () => {
+      getBoardList(page.value, searchType.value, keyword.value).then((res) => {
+        pageArray.value = res.data.list;
+        last.value = res.data.last;
+      });
+    };
+
+    const nextPage = () => {
+      page.value += 1;
+      fetchBoardList();
+    };
+
+    const prevPage = () => {
+      page.value -= 1;
+      fetchBoardList();
+    };
+
+    const fetchFilterdBoardList = () => {
+      page.value = 1;
+      fetchBoardList();
+    };
+
+    onBeforeMount(() => {
+      getBoardList(1).then((res) => {
+        pageArray.value = res.data.list;
+        last.value = res.data.last;
+      });
+    });
+    return {
+      pageArray,
+      page,
+      last,
+      searchType,
+      keyword,
+      fetchBoardList,
+      nextPage,
+      prevPage,
+      fetchFilterdBoardList,
+    };
+  },
+});
+</script>
 <style>
 table {
   width: 100%;

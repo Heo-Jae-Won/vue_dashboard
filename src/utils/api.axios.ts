@@ -1,6 +1,6 @@
 import { instance } from "./instance.axios";
 
-export const InsertBoardInfo = (formData: FormData) => {
+export const onInsertBoardInfo = (formData: FormData) => {
   return instance({
     url: "/boards",
     method: "post",
@@ -22,3 +22,28 @@ export const getBoardList = (pageNum: number, searchType?: string, keyword?: str
     },
   });
 };
+
+export const getBoardInfo = (boardNo : string | string[])=>{
+  return instance({
+    url:`/boards/${boardNo}`,
+    method:"get",
+  })
+}
+
+export const onUpdateBoardInfo = (formData : FormData, boardNo: string | string[] )=>{
+  return instance({
+    url:`/boards/${boardNo}/update`,
+    method:'post',
+    data:formData,
+    headers: {
+      "content-type": "multipart/form-data",
+    },
+  })
+}
+
+export const onDeleteBoardInfo =  (boardNo: string | string[])=>{
+  return instance({
+    url:`/boards/${boardNo}`,
+    method:'delete',
+  })
+}
