@@ -19,54 +19,60 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, Ref, onMounted } from "vue";
 import { onInsertBoardInfo } from "@/utils/api.axios";
+import { computed, defineComponent, reactive, ref, Ref, toRefs } from "vue";
+import { useRouter } from "vue-router";
 export default defineComponent({
   name: "boardInsert",
   setup() {
-    const boardTitle = ref("");
-    const boardContent = ref("");
-    const fileData = ref();
-    const boardWriter = ref("hjw");
-
-    const element: Ref<HTMLElement | null> = ref(null);
-    onMounted(() => {
-      console.log(element);
+    const boardInfo = reactive({
+      boardTitle: "" as string,
+      boardContent: "" as string,
+      boardWriter: "hjw" as string,
+      fileData: "" as any,
     });
-
-    //computed는 변화를 감지하여 내부 함수가 발동됨.
+    const router = useRouter();
     const fileUrl = computed(() => {
-
-      //filedata.value가 없을 때 처리가 필요함. 따라서 없으면 ""를 return
-      if (!fileData.value) {
+      if (!boardInfo.fileData) {
         return "";
       }
-      return window.URL.createObjectURL(fileData.value);
+      return window.URL.createObjectURL(boardInfo.fileData);
     });
+
     const onFileChange = ($event: Event) => {
       const target = $event.target as HTMLInputElement;
       if (target && target.files) {
-        fileData.value = target.files[0];
+        boardInfo.fileData = target.files[0];
       }
-      // 오른쪽 대신에 ref로 DOM에 접근. (document.getElementById("imagePreview") as HTMLImageElement).src = URL.createObjectURL(fileData.value);
     };
 
     const onFormSubmit = async () => {
+
+      if (!confirm("정말로 등록하시겠습니까?")) {
+        return;
+      }
+
       const formData = new FormData();
-      formData.append("boardTitle", boardTitle.value);
-      formData.append("boardContent", boardContent.value);
-      formData.append("boardWriter", boardWriter.value);
-      formData.append("file", fileData.value);
-      onInsertBoardInfo(formData);
+      formData.append("boardTitle", boardInfo.boardTitle);
+      formData.append("boardContent", boardInfo.boardContent);
+      formData.append("boardWriter", boardInfo.boardWriter);
+      formData.append("file", boardInfo.fileData);
+
+      await onInsertBoardInfo(formData)
+        .then(() => {
+          alert("등록이 완료되었습니다.");
+          router.push({
+            path: `/board/list`,
+          });
+        })
+        .catch((error) => {
+          alert(error);
+        });
     };
 
     return {
-      boardTitle,
-      boardContent,
-      fileData,
-      boardWriter,
       fileUrl,
-      element,
+      ...toRefs(boardInfo),
       onFormSubmit,
       onFileChange,
     };

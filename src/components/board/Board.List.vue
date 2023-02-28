@@ -19,7 +19,7 @@
         <td>{{ board.boardWriter }}</td>
         <td>{{ board.boardView }}</td>
         <td>{{ board.boardRegisterDate }}</td>
-        <img :src="`${board.boardPhoto || 'https://dummyimage.com/100x100'}`" alt="빈 이미지" />
+        <img :src="`${imageAPIURL+board.boardPhoto || 'https://dummyimage.com/100x100'}`" alt="빈 이미지" />
       </tr>
     </v-table>
     <div class="btn-cover">
@@ -42,6 +42,7 @@ export default defineComponent({
     const last = ref(1);
     const searchType = ref("");
     const keyword = ref("");
+    const imageAPIURL='http://localhost:8080/upload/';
 
     const fetchBoardList = () => {
       getBoardList(page.value, searchType.value, keyword.value).then((res) => {
@@ -77,6 +78,7 @@ export default defineComponent({
       last,
       searchType,
       keyword,
+      imageAPIURL,
       fetchBoardList,
       nextPage,
       prevPage,

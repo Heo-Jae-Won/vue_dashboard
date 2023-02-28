@@ -1,55 +1,56 @@
 <template>
   <div v-if="boardInfo">
-    <v-container>
-      <v-form validate-on="submit" @submit.prevent="onFormSubmit">
-        <v-row>
-          <v-col cols="12" md="4"> 제목: <v-text-field v-model="boardInfo.boardTitle" /> </v-col>
-          <v-col cols="12" md="4">
+    <VContainer>
+      <VForm>
+        <VRow>
+          <VCol cols="12" md="4"> 제목: <VTextField v-model="boardInfo.boardTitle" /> </VCol>
+          <VCol cols="12" md="4">
             내용:
-            <v-text-field v-model="boardInfo.boardContent" class="h-50" />
-          </v-col>
-          <v-col cols="12" md="4">
+            <VTextField v-model="boardInfo.boardContent" class="h-50" />
+          </VCol>
+          <VCol cols="12" md="4">
             날짜:
-            <v-text-field v-model="boardInfo.boardRegisterDate" class="h-50" />
-          </v-col>
+            <VTextField v-model="boardInfo.boardRegisterDate" class="h-50" />
+          </VCol>
 
-          <v-col cols="12" md="4">
+          <VCol cols="12" md="4">
             조회수:
-            <v-text-field v-model="boardInfo.boardView" class="h-50" />
-          </v-col>
-          <v-col cols="12" md="4">
+            <VTextField v-model="boardInfo.boardView" class="h-50" />
+          </VCol>
+          <VCol cols="12" md="4">
             작성자:
-            <v-text-field v-model="boardInfo.boardWriter" class="h-50" />
-          </v-col>
-          <v-col cols="12" md="4"> 이미지:<v-file-input @change="onFileChange($event)" :multiple="false" class="h-50" /> </v-col>
-          <img :src="boardInfo.boardPhoto" id="imagePreview" />
-          <v-sheet width="300" class="mx-auto">
-            <v-btn type="button" block class="mt-2" @click="onFormSubmit">수정하기</v-btn>
-          </v-sheet>
-          <v-sheet width="300" class="mx-auto">
-            <v-btn type="button" block class="mt-2" @click="onDeleteSubmit">삭제하기</v-btn>
-          </v-sheet>
-        </v-row>
-      </v-form>
-    </v-container>
+            <VTextField v-model="boardInfo.boardWriter" class="h-50" />
+          </VCol>
+          <VCol cols="12" md="4"> 이미지:<VFileInput @change="onFileChange($event)" :multiple="false" class="h-50" /> </VCol>
+          <img :src="'http://localhost:8080/upload/'+boardInfo.boardPhoto" id="imagePreview" />
+          <VSheet width="300" class="mx-auto">
+            <VBtn type="button" block class="mt-2" @click="onUpdateSubmit">수정하기</VBtn>
+          </VSheet>
+          <VSheet width="300" class="mx-auto">
+            <VBtn type="button" block class="mt-2" @click="onDeleteSubmit">삭제하기</VBtn>
+          </VSheet>
+        </VRow>
+      </VForm>
+    </VContainer>
   </div>
 </template>
 
 <script lang="ts">
 import { getBoardInfo, onUpdateBoardInfo, onDeleteBoardInfo } from "@/utils/api.axios";
 import { board } from "@/utils/instance.axios";
+import axios from "axios";
 import { defineComponent, onBeforeMount, ref } from "vue";
-import { useRoute } from "vue-router";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 export default defineComponent({
   name: "boardRead",
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const boardNo: string | string[] = route.params.boardNo;
     const boardInfo = ref();
-
     const fileData = ref();
-    const fetchBoardInfo = () => {
-      getBoardInfo(boardNo)
+    const fetchBoardInfo = async () => {
+      await getBoardInfo(boardNo)
         .then((res) => {
           boardInfo.value = res.data as board;
         })
@@ -58,7 +59,22 @@ export default defineComponent({
         });
     };
 
-    const onFormSubmit = async () => {
+    // const getImage= async (photoName: string)  : string  => {
+    //   const API_URL = `http://localhost:8080/upload/${photoName}`;
+      
+    //   await axios
+    //     .get(API_URL) // axios-> promise 반환
+    //     .then((response) => {
+    //       //promise 성공시
+    //        imgUrl = response.data[0].url;
+    //     });
+    // };
+
+    const onUpdateSubmit = async () => {
+      if (!confirm("정말로 수정하시겠습니까?")) {
+        return;
+      }
+
       const formData = new FormData();
       formData.append("boardTitle", boardInfo.value.boardTitle);
       formData.append("boardContent", boardInfo.value.boardContent);
@@ -66,7 +82,14 @@ export default defineComponent({
       formData.append("boardPhoto", boardInfo.value.boardPhoto);
       formData.append("file", fileData.value);
 
-      onUpdateBoardInfo(formData, boardNo);
+      await onUpdateBoardInfo(formData, boardNo)
+        .then(() => {
+          alert("수정이 완료되었습니다");
+          router.push("/board/list");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     };
 
     const onFileChange = ($event: Event) => {
@@ -77,16 +100,33 @@ export default defineComponent({
       (document.getElementById("imagePreview") as HTMLImageElement).src = URL.createObjectURL(fileData.value);
     };
 
-    const onDeleteSubmit = () => {
-      onDeleteBoardInfo(boardNo);
+    const onDeleteSubmit = async () => {
+      if (!confirm("정말로 삭제하시겠습니까?")) {
+        return;
+      }
+
+      await onDeleteBoardInfo(boardNo)
+        .then(() => {
+          alert("삭제가 완료되었습니다.");
+          router.push("/board/list");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     };
 
     onBeforeMount(() => {
       fetchBoardInfo();
     });
+
+    // onBeforeRouteLeave((to, from) => {
+    //   const answer = window.confirm("Do you really want to leave? you have unsaved changes!");
+    //   // cancel the navigation and stay on the same page
+    //   if (!answer) return false;
+    // });
     return {
       boardInfo,
-      onFormSubmit,
+      onUpdateSubmit,
       onFileChange,
       onDeleteSubmit,
       fetchBoardInfo,

@@ -1,3 +1,4 @@
+import { AxiosPromise } from "axios";
 import { instance } from "./instance.axios";
 
 export const onInsertBoardInfo = (formData: FormData) => {
@@ -23,27 +24,43 @@ export const getBoardList = (pageNum: number, searchType?: string, keyword?: str
   });
 };
 
-export const getBoardInfo = (boardNo : string | string[])=>{
+export const getBoardInfo = (boardNo: string | string[]) => {
   return instance({
-    url:`/boards/${boardNo}`,
-    method:"get",
-  })
-}
+    url: `/boards/${boardNo}`,
+    method: "get",
+  });
+};
 
-export const onUpdateBoardInfo = (formData : FormData, boardNo: string | string[] )=>{
+export const onUpdateBoardInfo = (formData: FormData, boardNo: string | string[]) => {
   return instance({
-    url:`/boards/${boardNo}/update`,
-    method:'post',
-    data:formData,
+    url: `/boards/${boardNo}/update`,
+    method: "post",
+    data: formData,
     headers: {
       "content-type": "multipart/form-data",
     },
-  })
-}
+  });
+};
 
-export const onDeleteBoardInfo =  (boardNo: string | string[])=>{
+export const onDeleteBoardInfo = (boardNo: string | string[]) => {
   return instance({
-    url:`/boards/${boardNo}`,
-    method:'delete',
-  })
-}
+    url: `/boards/${boardNo}`,
+    method: "delete",
+  });
+};
+
+export const onRegisterUserInfo = (formData: FormData) => {
+  return instance({
+    url: `/users`,
+    method: "post",
+    data: formData,
+  });
+};
+
+export const onLogin = (formData: FormData): AxiosPromise<number> => {
+  return instance({
+    url: `/login`,
+    method: "post",
+    data: formData,
+  });
+};
