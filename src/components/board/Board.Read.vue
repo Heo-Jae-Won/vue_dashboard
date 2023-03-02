@@ -3,31 +3,31 @@
     <VContainer>
       <VForm>
         <VRow>
-          <VCol cols="12" md="4"> 제목: <VTextField v-model="boardInfo.boardTitle" /> </VCol>
+          <VCol cols="12" md="4"> 제목: <VTextField :rules="[v=>rules.max50(v)]" v-model="boardInfo.boardTitle" /> </VCol>
           <VCol cols="12" md="4">
             내용:
-            <VTextField v-model="boardInfo.boardContent" class="h-50" />
+            <VTextField :rules="[v=>rules.max300(v)]" v-model="boardInfo.boardContent" class="h-50" />
           </VCol>
           <VCol cols="12" md="4">
             날짜:
-            <VTextField v-model="boardInfo.boardRegisterDate" class="h-50" />
+            <VTextField v-model="boardInfo.boardRegisterDate" class="h-50" readonly />
           </VCol>
 
           <VCol cols="12" md="4">
             조회수:
-            <VTextField v-model="boardInfo.boardView" class="h-50" />
+            <VTextField v-model="boardInfo.boardView" class="h-50" readonly />
           </VCol>
           <VCol cols="12" md="4">
             작성자:
-            <VTextField v-model="boardInfo.boardWriter" class="h-50" />
+            <VTextField v-model="boardInfo.boardWriter" class="h-50" readonly />
           </VCol>
           <VCol cols="12" md="4"> 이미지:<VFileInput @change="onFileChange($event)" :multiple="false" class="h-50" /> </VCol>
-          <img :src="'http://localhost:8080/upload/'+boardInfo.boardPhoto" id="imagePreview" />
+          <img :src="'http://localhost:8080/upload/' + boardInfo.boardPhoto" id="imagePreview" />
           <VSheet width="300" class="mx-auto">
-            <VBtn type="button" block class="mt-2" @click="onUpdateSubmit">수정하기</VBtn>
+            <VBtn :disabled="!isWriterEquals" type="button" block class="mt-2" @click="onUpdateSubmit">수정하기</VBtn>
           </VSheet>
           <VSheet width="300" class="mx-auto">
-            <VBtn type="button" block class="mt-2" @click="onDeleteSubmit">삭제하기</VBtn>
+            <VBtn :disabled="!isWriterEquals" type="button" block class="mt-2" @click="onDeleteSubmit">삭제하기</VBtn>
           </VSheet>
         </VRow>
       </VForm>
@@ -36,39 +36,36 @@
 </template>
 
 <script lang="ts">
-import { getBoardInfo, onUpdateBoardInfo, onDeleteBoardInfo } from "@/utils/api.axios";
-import { board } from "@/utils/instance.axios";
-import axios from "axios";
-import { defineComponent, onBeforeMount, ref } from "vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import { useUserStore } from "@/store/loginuser";
+import { Board } from "@/store/model/board.model";
+import { getBoardInfo, onDeleteBoardInfo, onUpdateBoardInfo } from "@/utils/api.axios";
+import { storeToRefs } from "pinia";
+import { computed, defineComponent, onBeforeMount, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { rules } from "@/utils/rule";
 export default defineComponent({
   name: "boardRead",
   setup() {
     const route = useRoute();
     const router = useRouter();
-    const boardNo: string | string[] = route.params.boardNo;
+    const boardNo: string = route.params.boardNo as string;
     const boardInfo = ref();
     const fileData = ref();
+    const store = useUserStore();
+    const { loginUser } = storeToRefs(store);
+    //boardInfo와 loginUser 모두 변화하기 때문에 computed를 사용한듯 싶다.
+    const isWriterEquals = computed(() => boardInfo.value.boardWriter === loginUser.value);
+
     const fetchBoardInfo = async () => {
       await getBoardInfo(boardNo)
         .then((res) => {
-          boardInfo.value = res.data as board;
+          boardInfo.value = res.data as Board;
+          console.log(isWriterEquals);
         })
         .catch((e) => {
           console.log(e);
         });
     };
-
-    // const getImage= async (photoName: string)  : string  => {
-    //   const API_URL = `http://localhost:8080/upload/${photoName}`;
-      
-    //   await axios
-    //     .get(API_URL) // axios-> promise 반환
-    //     .then((response) => {
-    //       //promise 성공시
-    //        imgUrl = response.data[0].url;
-    //     });
-    // };
 
     const onUpdateSubmit = async () => {
       if (!confirm("정말로 수정하시겠습니까?")) {
@@ -126,10 +123,13 @@ export default defineComponent({
     // });
     return {
       boardInfo,
+      loginUser,
       onUpdateSubmit,
       onFileChange,
       onDeleteSubmit,
       fetchBoardInfo,
+      isWriterEquals,
+      rules
     };
   },
 });

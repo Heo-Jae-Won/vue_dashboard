@@ -31,21 +31,21 @@
 </template>
 
 <script lang="ts">
+import { Board } from "@/store/model/board.model";
 import { getBoardList } from "@/utils/api.axios";
-import { board } from "@/utils/instance.axios";
-import { defineComponent, onBeforeMount, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 export default defineComponent({
   name: "boardList",
   setup() {
-    const pageArray = ref([] as Array<board>);
+    const pageArray = ref([] as Array<Board>);
     const page = ref(1);
     const last = ref(1);
     const searchType = ref("");
     const keyword = ref("");
     const imageAPIURL='http://localhost:8080/upload/';
 
-    const fetchBoardList = () => {
-      getBoardList(page.value, searchType.value, keyword.value).then((res) => {
+    const fetchBoardList = async () => {
+      await getBoardList(page.value, searchType.value, keyword.value).then((res) => {
         pageArray.value = res.data.list;
         last.value = res.data.last;
       });
@@ -66,8 +66,8 @@ export default defineComponent({
       fetchBoardList();
     };
 
-    onBeforeMount(() => {
-      getBoardList(1).then((res) => {
+    onMounted(() => {
+      getBoardList(1,"제목","").then((res) => {
         pageArray.value = res.data.list;
         last.value = res.data.last;
       });

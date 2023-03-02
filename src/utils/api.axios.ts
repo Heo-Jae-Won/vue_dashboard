@@ -1,3 +1,4 @@
+import { User } from "@/store/model/user.model";
 import { AxiosPromise } from "axios";
 import { instance } from "./instance.axios";
 
@@ -24,7 +25,7 @@ export const getBoardList = (pageNum: number, searchType?: string, keyword?: str
   });
 };
 
-export const getBoardInfo = (boardNo: string | string[]) => {
+export const getBoardInfo = (boardNo: string) => {
   return instance({
     url: `/boards/${boardNo}`,
     method: "get",
@@ -42,7 +43,7 @@ export const onUpdateBoardInfo = (formData: FormData, boardNo: string | string[]
   });
 };
 
-export const onDeleteBoardInfo = (boardNo: string | string[]) => {
+export const onDeleteBoardInfo = (boardNo: string) => {
   return instance({
     url: `/boards/${boardNo}`,
     method: "delete",
@@ -62,5 +63,38 @@ export const onLogin = (formData: FormData): AxiosPromise<number> => {
     url: `/login`,
     method: "post",
     data: formData,
+  });
+};
+
+export const onLogout = () => {
+  return instance({
+    url: `/logout`,
+    method: "post",
+  });
+};
+
+export const onUpdateUserInfo = (userId: string, data: User) => {
+  return instance({
+    url: `/users/${userId}`,
+    method: "put",
+    data,
+  });
+};
+
+export const getUserInfo = (userId: string) => {
+  return instance({
+    url: `/users/${userId}`,
+    method: "get",
+  });
+};
+
+export const onUpdatePassword = (userId: string, userPassword: string) => {
+  return instance({
+    url: `/users/${userId}/password`,
+    method: "put",
+    data: {
+      userPassword,
+      userId,
+    }
   });
 };

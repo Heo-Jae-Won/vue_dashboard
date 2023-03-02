@@ -6,32 +6,7 @@ export const instance = axios.create({
   baseURL: apiRootPath,
 });
 
-/*export class board {
-  constructor(
-    public boardNo: number,
-    public boardTitle: string,
-    public boardContent: string,
-    public boardWriter: string,
-    public boardView: number,
-    public boardRegisterDate: Date,
-    public boardPhoto: string
-  ) {
-    this.boardNo = boardNo;
-    this.boardTitle = boardTitle;
-    this.boardContent = boardContent;
-    this.boardWriter = boardWriter;
-    this.boardView = boardView;
-    this.boardRegisterDate = boardRegisterDate;
-    this.boardPhoto = boardPhoto;
-  }
-}*/ //아래와 같이 쓰면 위의 constructor가 자동 생성!
-export class board {}
-export interface board {
-  boardNo: number;
-  boardTitle: string;
-  boardContent: string;
-  boardWriter: string;
-  boardView: number;
-  boardRegisterDate: Date;
-  boardPhoto: string;
-}
+// instance.interceptors.request.use((config) => {
+//   config.headers["Access-Control-Allow-Origin"] = "*"; // CORS 설정(모든 리소스 허용)
+//   return config;
+// });

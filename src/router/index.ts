@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import { setupGuard } from "./routerguard";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
@@ -8,7 +9,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/board/list",
-    name: "about",
+    name: "list",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -34,11 +35,22 @@ const routes: Array<RouteRecordRaw> = [
     name: "register",
     component: () => import(/* webpackChunkName: "register" */ "../views/RegisterView.vue"),
   },
+  {
+    path: "/user/:userId",
+    name: "info",
+    component: () => import(/* webpackChunkName: "info" */ "../views/UserInfoView.vue"),
+  },
+  {
+    path: "/user/password",
+    name: "password",
+    component: () => import(/* webpackChunkName: "info" */ "../views/UserPasswordView.vue"),
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+setupGuard(router);
 
 export default router;
