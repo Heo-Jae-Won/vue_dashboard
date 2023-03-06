@@ -19,7 +19,7 @@
         <td>{{ board.boardWriter }}</td>
         <td>{{ board.boardView }}</td>
         <td>{{ board.boardRegisterDate }}</td>
-        <img :src="'http://dpms.openobject.net:4103/api/display?fileName='+board.boardPhoto" alt="빈 이미지" />
+        <img :src="'/upload/'+board.boardPhoto" alt="빈 이미지" />
       </tr>
     </v-table>
     <div class="btn-cover">
