@@ -21,7 +21,7 @@
             <VTextField v-model="boardInfo.boardWriter" class="h-50" readonly />
           </VCol>
           <VCol cols="12" md="4"> 이미지:<VFileInput @change="onFileChange($event)" :multiple="false" class="h-50" /> </VCol>
-          <img :src="'http://dpms.openobject.net:4103/display?fileName=' + boardInfo.boardPhoto" id="imagePreview" />
+          <img :src="'http://dpms.openobject.net:4103/api/display?fileName=' + boardInfo.boardPhoto" id="imagePreview" />
           <VSheet width="300" class="mx-auto">
             <VBtn :disabled="!isWriterEquals" type="button" block class="mt-2" @click="onUpdateSubmit">수정하기</VBtn>
           </VSheet>
