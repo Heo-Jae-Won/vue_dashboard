@@ -1,5 +1,5 @@
 import axios from "axios";
-const apiRootPath = process.env.VUE_APP_TEST;
+const apiRootPath = process.env.VUE_APP_PROD;
 
 export const instance = axios.create({
   timeout: 10 * 1000,

@@ -21,7 +21,7 @@ import { defineComponent } from "vue";
 import { ref } from "vue";
 
 export default defineComponent({
-  name: "top",
+  name: "headerTop",
   setup() {
     const bars = ref([{ class: "primary", dark: true }]);
     const store = useUserStore();

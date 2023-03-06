@@ -19,13 +19,13 @@
         <td>{{ board.boardWriter }}</td>
         <td>{{ board.boardView }}</td>
         <td>{{ board.boardRegisterDate }}</td>
-        <img :src="`${imageAPIURL+board.boardPhoto || 'https://dummyimage.com/100x100'}`" alt="빈 이미지" />
+        <img :src="`/resources/${board.boardPhoto}`" alt="빈 이미지" />
       </tr>
     </v-table>
     <div class="btn-cover">
-      <button :disabled="page <= 1" @click="prevPage()" class="page-btn">이전</button>
+      <v-btn :disabled="page <= 1" @click="prevPage()" class="page-btn">이전</v-btn>
       <span class="page-count">{{ page }} / {{ last }} 페이지</span>
-      <button :disabled="page >= last" @click="nextPage()" class="page-btn">다음</button>
+      <v-btn :disabled="page >= last" @click="nextPage()" class="page-btn">다음</v-btn>
     </div>
   </div>
 </template>
@@ -42,7 +42,6 @@ export default defineComponent({
     const last = ref(1);
     const searchType = ref("");
     const keyword = ref("");
-    const imageAPIURL='http://localhost:8080/upload/';
 
     const fetchBoardList = async () => {
       await getBoardList(page.value, searchType.value, keyword.value).then((res) => {
@@ -67,7 +66,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      getBoardList(1,"제목","").then((res) => {
+      getBoardList(1, "제목", "").then((res) => {
         pageArray.value = res.data.list;
         last.value = res.data.last;
       });
@@ -78,7 +77,6 @@ export default defineComponent({
       last,
       searchType,
       keyword,
-      imageAPIURL,
       fetchBoardList,
       nextPage,
       prevPage,

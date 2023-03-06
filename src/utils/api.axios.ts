@@ -98,3 +98,20 @@ export const onUpdatePassword = (userId: string, userPassword: string) => {
     }
   });
 };
+
+export const onCheckDuplicateId=(userId : string)=>{
+  return instance({
+    url:`/users/data/${userId}`,
+    method:'post',
+  })
+}
+
+export const renderImage=(fileName : string)=>{
+  return instance({
+    url:`/display`,
+    method:"get",
+    params:{
+      fileName:fileName
+    }
+  })
+}

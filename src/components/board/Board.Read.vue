@@ -12,7 +12,6 @@
             날짜:
             <VTextField v-model="boardInfo.boardRegisterDate" class="h-50" readonly />
           </VCol>
-
           <VCol cols="12" md="4">
             조회수:
             <VTextField v-model="boardInfo.boardView" class="h-50" readonly />
@@ -40,7 +39,7 @@ import { useUserStore } from "@/store/loginuser";
 import { Board } from "@/store/model/board.model";
 import { getBoardInfo, onDeleteBoardInfo, onUpdateBoardInfo } from "@/utils/api.axios";
 import { storeToRefs } from "pinia";
-import { computed, defineComponent, onBeforeMount, ref } from "vue";
+import { computed, defineComponent, onBeforeMount, ref, Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { rules } from "@/utils/rule";
 export default defineComponent({
@@ -49,7 +48,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const boardNo: string = route.params.boardNo as string;
-    const boardInfo = ref();
+    const boardInfo :Ref<Board> = ref({} as Board);
     const fileData = ref();
     const store = useUserStore();
     const { loginUser } = storeToRefs(store);
@@ -116,11 +115,6 @@ export default defineComponent({
       fetchBoardInfo();
     });
 
-    // onBeforeRouteLeave((to, from) => {
-    //   const answer = window.confirm("Do you really want to leave? you have unsaved changes!");
-    //   // cancel the navigation and stay on the same page
-    //   if (!answer) return false;
-    // });
     return {
       boardInfo,
       loginUser,

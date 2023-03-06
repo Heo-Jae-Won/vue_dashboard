@@ -2,5 +2,5 @@
 import userInfo from "../components/user/User.Info.vue";
 </script>
 <template>
-  <userInfo />
+  <user-info />
 </template>

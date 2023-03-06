@@ -3,5 +3,5 @@ import BoardRead from "@/components/board/Board.Read.vue";
 </script>
 
 <template>
-  <BoardRead />
+  <board-read />
 </template>

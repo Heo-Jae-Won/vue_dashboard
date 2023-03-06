@@ -3,5 +3,5 @@ import UserPassword from "@/components/user/User.Password.vue";
 </script>
 
 <template>
-  <UserPassword />
+  <user-password />
 </template>

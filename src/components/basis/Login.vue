@@ -8,28 +8,24 @@
 </template>
 
 <script lang="ts">
-import router from "@/router";
 import { useUserStore } from "@/store/loginuser";
 import { onLogin } from "@/utils/api.axios";
-import { storeToRefs } from "pinia";
 import { defineComponent, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 export default defineComponent({
-  name: "login",
+  name: "userLogin",
   setup() {
     const userId = ref("");
     const userPassword = ref("");
     const userStatus = ref();
     const store = useUserStore();
     const router=useRouter();
-    const { changeLoginUser,loginUser } = store;
+    const { changeLoginUser } = store;
 
     const onLoginSubmit = async () => {
       const formData = new FormData();
       formData.append("userId", userId.value);
       formData.append("userPassword", userPassword.value);
-
-      //routerguard 넣기
 
       try {
         userStatus.value = (await onLogin(formData)).data;

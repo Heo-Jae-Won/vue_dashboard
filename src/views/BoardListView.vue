@@ -5,6 +5,6 @@ import boardList from "../components/board/Board.List.vue";
 <template>
   <div>
     <h1>TABLE PAGINATION</h1>
-    <boardList />
+    <board-list />
   </div>
 </template>

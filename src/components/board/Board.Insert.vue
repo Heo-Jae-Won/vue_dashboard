@@ -22,20 +22,20 @@
 import { useUserStore } from "@/store/loginuser";
 import { onInsertBoardInfo } from "@/utils/api.axios";
 import { storeToRefs } from "pinia";
-import { computed, defineComponent, reactive, toRefs } from "vue";
+import { computed, defineComponent, reactive, toRefs,Ref } from "vue";
 import { useRouter } from "vue-router";
 import { rules } from "@/utils/rule";
 export default defineComponent({
   name: "boardInsert",
   setup() {
+    const store=useUserStore();
+    const {loginUser}=storeToRefs(store);
     const boardInfo = reactive({
       boardTitle: "" as string,
       boardContent: "" as string,
-      boardWriter: "hjw" as string,
+      boardWriter: loginUser as Ref<string>,
       fileData: "" as any,
     });
-    const store=useUserStore();
-    const {loginUser}=storeToRefs(store);
     const router = useRouter();
     const fileUrl = computed(() => {
       if (!boardInfo.fileData) {

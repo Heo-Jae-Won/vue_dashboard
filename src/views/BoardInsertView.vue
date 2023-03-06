@@ -4,6 +4,6 @@ import BoardInsert from "@/components/board/Board.Insert.vue";
 
 <template>
   <div class="home">
-    <BoardInsert />
+    <board-insert />
   </div>
 </template>

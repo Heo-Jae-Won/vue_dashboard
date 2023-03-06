@@ -11,7 +11,7 @@ import { defineComponent, Ref, ref } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
-  name: "password",
+  name: "UserPassword",
   setup() {
     const userPassword: Ref<string> = ref("");
     const confirmPassword: Ref<string> = ref("");
